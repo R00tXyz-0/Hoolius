@@ -141,13 +141,13 @@ More languages are planned for future releases.
 
 Visit the official documentation:
 
-> https://YOUR-DOCS-URL
+> https://hoolius.vercel.app/docs
 
 ---
 
 ## Website
 
-https://YOUR-WEBSITE
+https://hoolius.vercel.app/
 
 ---
 
