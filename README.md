@@ -46,137 +46,190 @@ npm install -g hoolius
 
 ---
 
-## Quick Start
 
-Check the installed version:
-
-```bash
-hoolius version
-```
-
-Display available commands:
+## Usage
 
 ```bash
 hoolius help
-```
-
-Initialize a project:
-
-```bash
-hoolius init
-```
-
-Verify your development environment:
-
-```bash
+hoolius version
 hoolius doctor
+hoolius init
+hoolius support
+hoolius ask "your question"
 ```
 
----
+## AI Commands
 
-## Example
+The `ask` command sends your question to the Gemini API and prints a clean,
+Markdown-free answer.
 
-```bash
-$ hoolius doctor
+
+## Commands
+
+| Command    | Description                              |
+|------------|------------------------------------------|
+| `help`     | Show available commands                  |
+| `version`  | Show Hoolius version                     |
+| `doctor`   | Detect project technologies & validate environment |
+| `init`     | Initialize a Hoolius project             |
+| `support`  | Show contact & documentation links       |
+| `ask`      | Ask a question to the AI assistant       |
+
+## Doctor
+
+The `doctor` command works in two independent phases:
+
+1. **Project Detection** — identifies what technologies the project uses
+2. **Environment Validation** — checks that required development tools are installed
+
+### Phase 1 — Project Detection
+
+Detection relies only on project files such as `package.json`, `tsconfig.json`, configuration files, dependencies, and source file extensions.
+
+#### Supported Languages
+
+| Language   | Detection Signals |
+|------------|-------------------|
+| C          | `Makefile`, `CMakeLists.txt`, `*.c` files |
+| C++        | `*.cpp`, `*.cc`, `*.cxx` files |
+| Python     | `pyproject.toml`, `requirements.txt`, `setup.py`, `*.py` files |
+| Java       | `pom.xml`, `build.gradle`, `build.gradle.kts`, `*.java` files |
+| Go         | `go.mod`, `*.go` files |
+| Rust       | `Cargo.toml`, `*.rs` files |
+| C#         | `*.csproj`, `*.sln`, `*.cs` files |
+| Dart       | `pubspec.yaml`, `*.dart` files |
+| Swift      | `Package.swift`, `*.swift` files |
+| Ruby       | `Gemfile`, `Rakefile`, `*.rb` files |
+| PHP        | `composer.json`, `*.php` files |
+
+#### Supported Web Technologies
+
+| Technology | Detection Signals |
+|------------|-------------------|
+| JavaScript | `package.json` exists AND no other JS framework detected |
+| TypeScript | `tsconfig.json` or `"typescript"` in dependencies/devDependencies |
+| React      | `"react"` in `package.json` dependencies |
+| Vite       | `vite.config.*` or `"vite"` in devDependencies |
+| Next.js    | `next.config.*` or `"next"` in dependencies |
+| Express    | `"express"` in `package.json` dependencies |
+| NestJS     | `"@nestjs/core"` in dependencies |
+
+> **Note:** Node.js is NOT a detected technology. It is a runtime environment validated during Phase 2.
+
+### Phase 2 — Environment Validation
+
+For each detected technology, Hoolius validates the required development tools on the current machine.
+
+| Technology   | Tools Checked |
+|--------------|---------------|
+| C            | gcc/clang, make, cmake, pkg-config, Makefile/CMakeLists.txt |
+| C++          | g++/clang++, make, cmake, pkg-config, Makefile/CMakeLists.txt |
+| Python       | python3, pip, requirements.txt/pyproject.toml/setup.py |
+| Java         | java, javac, maven/gradle, pom.xml/build.gradle |
+| Go           | go, go.mod |
+| Rust         | rustc, cargo, Cargo.toml |
+| C#           | dotnet, .csproj, .sln |
+| Dart         | dart, pubspec.yaml |
+| Swift        | swift, Package.swift |
+| Ruby         | ruby, gem, bundler, Gemfile |
+| PHP          | php, composer, composer.json |
+| JavaScript   | node, npm/pnpm/yarn/bun, package.json |
+| TypeScript   | tsc, tsconfig.json |
+| React        | jsconfig.json |
+| Vite         | vite CLI, vite.config.* |
+| Next.js      | next CLI, next.config.* |
+| Express      | app.js/server.js entry point |
+| NestJS       | nest CLI, nest-cli.json, src/ directory |
+
+### Example Output
+
+#### C + JavaScript project
+
+```
+----------------------------------------
+Detected Technologies
+----------------------------------------
+
+[OK] C
+[OK] JavaScript
 
 ----------------------------------------
-Project Detection
+C Environment
 ----------------------------------------
-
-[OK] Project detected: Python
+[OK]  gcc          14.2.0
+[OK]  make
+[!]   cmake (Optional)
+[OK]  Makefile
 
 ----------------------------------------
-Environment
+Node.js Environment
 ----------------------------------------
-
-[OK] Python   3.11.9
-[OK] pip      26.1.2
-[OK] Git      2.52.0
+[OK]  node         20.11.0
+[OK]  npm          10.2.0
+[OK]  package.json
 
 ----------------------------------------
 Summary
 ----------------------------------------
 
-Project: Python
-Environment: Ready
+Technologies : 2
+Status       : Ready
 ```
 
----
+#### React + TypeScript project
 
-## Supported Projects
+```
+----------------------------------------
+Detected Technologies
+----------------------------------------
 
-Current support:
+[OK] TypeScript
+[OK] React
 
-- C
-- Python
+----------------------------------------
+Node.js Environment
+----------------------------------------
+[OK]  node         20.11.0
+[OK]  npm          10.2.0
+[OK]  package.json
 
-More languages are planned for future releases.
+----------------------------------------
+TypeScript Environment
+----------------------------------------
+[!]   TypeScript compiler (Optional)
+[!]   tsconfig.json (Optional)
 
----
+----------------------------------------
+React Environment
+----------------------------------------
+[OK]  React project detected
+[!]   jsconfig.json (Optional)
 
-## Roadmap
+----------------------------------------
+Summary
+----------------------------------------
 
-### v0.1
+Technologies : 2
+Status       : Ready
+```
 
-- Version command
-- Help command
-- Init command
-- Doctor command
-- C detection
-- Python detection
+## Build from Source
 
-### Upcoming
+```bash
+make
+make doctor        # build + run ./hoolius doctor
+make ask          # build + run ./hoolius ask
+make clean        # remove build artifacts
+```
 
-- Node.js support
-- Rust support
-- Go support
-- Java support
-- Project templates
-- Configuration management
-- Plugin system
+## Architecture
 
----
-
-## Documentation
-
-Visit the official documentation:
-
-> https://hoolius.vercel.app/docs
-
----
-
-## Website
-
-https://hoolius.vercel.app/
-
----
-
-## Community
-
-- GitHub Issues
-- LinkedIn
-- Contact
-
----
-
-## Contributing
-
-Hoolius is currently **closed source**.
-
-Bug reports, feature requests, and feedback are welcome through GitHub Issues.
-
----
+See `DOCTOR_ARCHITECTURE.md` for a detailed explanation of the doctor command architecture, execution flow, and registration system.
 
 ## License
 
-Copyright © 2026 Hoolius.
+MIT
 
-All rights reserved.
-
-This software is proprietary.
-Unauthorized copying, modification, distribution, or reverse engineering of the source code is prohibited unless explicitly authorized.
-
----
 
 <div align="center">
 
